@@ -62,7 +62,19 @@
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/resources/public</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
         <executions>
           <execution>
             <id>copy Vue frontend content</id>
@@ -75,9 +87,13 @@
               <overwrite>true</overwrite>
               <resources>
                 <resource>
-                  <directory>
-                    ${project.parent.basedir}/qt-asia-ui/dist
-                  </directory>
+                  <directory>${project.parent.basedir}/qt-asia-ui/dist</directory>
+                  <includes>
+                    <include>static/</include>
+                    <include>index.html</include>
+                    <include>avatar.gif</include>
+                    <include>logo.png</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>

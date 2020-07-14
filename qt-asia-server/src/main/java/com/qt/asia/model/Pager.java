@@ -1,14 +1,11 @@
 package com.qt.asia.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @Author: gaoxi1534@126.com
  * @CreateTime: 2020-07-14 17:28
  * @Description: 统一分页
  */
-public class Pager<T> {
+public class Pager {
 
   private static final Long DEFAULT_COUNT = 0L;
 
@@ -26,8 +23,6 @@ public class Pager<T> {
 
   private Long offset = DEFAULT_OFFSET;
 
-  private List<T> data = new ArrayList<>();
-
   public Pager() {
 
   }
@@ -37,14 +32,18 @@ public class Pager<T> {
     this.size = size;
   }
 
-  public Pager(Long count, List<T> data) {
+  public Pager(Long count) {
     this.count = count;
-    this.data = data;
   }
 
   @Override
   public String toString() {
-    return "PageResult[count=" + this.count + ", items=" + this.data + "]";
+    return "Pager{" +
+        "count=" + count +
+        ", page=" + page +
+        ", size=" + size +
+        ", offset=" + offset +
+        '}';
   }
 
   public Long getCount() {
@@ -78,13 +77,5 @@ public class Pager<T> {
 
   public void setOffset(Long offset) {
     this.offset = offset;
-  }
-
-  public List<T> getData() {
-    return data;
-  }
-
-  public void setData(List<T> data) {
-    this.data = data;
   }
 }

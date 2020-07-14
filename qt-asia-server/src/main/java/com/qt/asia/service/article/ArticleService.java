@@ -1,8 +1,10 @@
 package com.qt.asia.service.article;
 
+import com.qt.asia.model.PageModel;
 import com.qt.asia.model.Pager;
 import com.qt.asia.model.request.ArticleRequest;
 import com.qt.asia.model.vo.ArticleVO;
+import java.util.List;
 
 /**
  * @Author: gaoxi1534@126.com
@@ -11,6 +13,6 @@ import com.qt.asia.model.vo.ArticleVO;
  */
 public interface ArticleService {
 
-  Pager<ArticleVO> getList(ArticleRequest request, Pager<ArticleVO> pager);
+  PageModel<List<ArticleVO>> getList(ArticleRequest request, Pager pager);
 
 }

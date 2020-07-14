@@ -1,5 +1,6 @@
 package com.qt.asia.service.article.impl;
 
+import com.qt.asia.model.PageModel;
 import com.qt.asia.model.Pager;
 import com.qt.asia.model.request.ArticleRequest;
 import com.qt.asia.model.vo.ArticleVO;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class ArticleServiceImpl implements ArticleService {
 
   @Override
-  public Pager<ArticleVO> getList(ArticleRequest request, Pager<ArticleVO> pager) {
+  public PageModel<List<ArticleVO>> getList(ArticleRequest request, Pager pager) {
 
     List<ArticleVO> list = getList();
 
@@ -25,9 +26,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     pager.setCount(count);
 
-    pager.setData(list);
+    PageModel<List<ArticleVO>> pageModel = new PageModel<>(pager, list);
 
-    return pager;
+    return pageModel;
   }
 
   private List<ArticleVO> getList() {

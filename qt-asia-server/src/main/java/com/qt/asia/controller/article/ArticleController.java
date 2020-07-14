@@ -1,10 +1,12 @@
 package com.qt.asia.controller.article;
 
 import com.qt.asia.model.BaseModel;
+import com.qt.asia.model.PageModel;
 import com.qt.asia.model.Pager;
 import com.qt.asia.model.request.ArticleRequest;
 import com.qt.asia.model.vo.ArticleVO;
 import com.qt.asia.service.article.ArticleService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +26,8 @@ public class ArticleController {
   private ArticleService articleService;
 
   @GetMapping(value = "/list")
-  public BaseModel<Pager<ArticleVO>> list(ArticleRequest request, Pager<ArticleVO> pager, @PathVariable String env) {
+  public BaseModel<PageModel<List<ArticleVO>>> list(ArticleRequest request, Pager page, @PathVariable String env) {
 
-    return BaseModel.getInstance(articleService.getList(request, pager));
+    return BaseModel.getInstance(articleService.getList(request, page));
   }
 }
