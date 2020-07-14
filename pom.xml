@@ -5,8 +5,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>qt-asia-server</module>
     <module>qt-asia-ui</module>
+    <module>qt-asia-web</module>
   </modules>
 
   <groupId>con.qt.asia</groupId>

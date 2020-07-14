@@ -52,7 +52,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: '主页',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '主页', icon: 'dashboard' }
+      meta: {title: '主页', icon: 'dashboard'}
     }]
   },
 
@@ -60,25 +60,30 @@ export const constantRoutes = [
     path: '/article',
     component: Layout,
     redirect: '/article/list',
-    name: '文章',
-    meta: { title: '文章管理', icon: 'el-icon-s-help' },
+    name: '文章管理',
+    meta: {title: '文章管理', icon: 'el-icon-s-help'},
     children: [
       {
         path: 'list',
-        name: '文章列表',
+        name: '专题列表',
         component: () => import('@/views/article/index'),
-        meta: { title: '文章列表', icon: 'table' }
+        meta: {title: '专题列表', icon: 'table'}
+      }, {
+        path: 'add',
+        name: '添加专题',
+        component: () => import('@/views/article/create'),
+        meta: {title: '添加专题', icon: 'edit'}
       }
     ]
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
 
