@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="标题" style="width: 200px;" class="filter-item"/>
+      <el-input v-model="listQuery.title" placeholder="标题" style="width: 200px;" class="filter-item"></el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" plain @click="search()">搜索</el-button>
       <el-button class="filter-item" type="info" @click="cleanSearch()">重置</el-button>
     </div>
@@ -13,7 +13,7 @@
       border
       fit
       highlight-current-row
-    >
+      style="width: 100%;">
       <el-table-column align="center" label="编号" width="95">
         <template slot-scope="scope">
           {{ scope.row.id }}
@@ -40,45 +40,51 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="paging.count>0" :total="paging.count" :page.sync="paging.page" :limit.sync="paging.size" @pagination="fetchData()"/>
-    <!--    <el-dialog :visible.sync="dialogFormVisible" :title="textMap[dialogStatus]" width="600px">-->
-    <!--      <el-form ref="dataForm" :rules="rules" :model="nodeModel" label-position="left" label-width="120px" style="width: 400px; margin-left:30px;">-->
-    <!--        <el-form-item label="所属集群" prop="clusterId">-->
-    <!--          <el-select v-if="dialogStatus === 'create'" v-model="nodeModel.clusterId" placeholder="选择所属集群">-->
-    <!--            <el-option key="" label="单机" value="" />-->
-    <!--            <el-option v-for="item in canalClusters" :key="item.id" :label="item.name" :value="item.id" />-->
-    <!--          </el-select>-->
-    <!--          <el-select v-else v-model="nodeModel.clusterId" placeholder="选择所属集群" disabled="disabled">-->
-    <!--            <el-option key="" label="单机" value="" />-->
-    <!--            <el-option v-for="item in canalClusters" :key="item.id" :label="item.name" :value="item.id" />-->
-    <!--          </el-select>-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="Server 名称" prop="name">-->
-    <!--          <el-input v-model="nodeModel.name" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="Server IP" prop="ip">-->
-    <!--          <el-input v-model="nodeModel.ip" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="admin 端口" prop="adminPort">-->
-    <!--          <el-input v-model="nodeModel.adminPort" placeholder="11110" type="number" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="tcp 端口" prop="tcpPort">-->
-    <!--          <el-input v-model="nodeModel.tcpPort" placeholder="11111" type="number" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="metric 端口" prop="metricPort">-->
-    <!--          <el-input v-model="nodeModel.metricPort" placeholder="11112" type="number" />-->
-    <!--        </el-form-item>-->
-    <!--      </el-form>-->
-    <!--      <div slot="footer" class="dialog-footer">-->
-    <!--        <el-button @click="dialogFormVisible = false">取消</el-button>-->
-    <!--        <el-button type="primary" @click="dataOperation()">确定</el-button>-->
-    <!--      </div>-->
-    <!--    </el-dialog>-->
+
+    <pagination
+      v-show="paging.count>0"
+      layout="total,prev, pager, next"
+      :total="paging.count"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.size"
+      @pagination="fetchData">
+    </pagination>
+
+    <el-dialog
+      :visible.sync="dialogFormVisible"
+      title="编辑专题"
+      width="600px">
+      <el-form
+        ref="dataForm"
+        :model="editModel"
+        :rules="rules"
+        label-position="left"
+        label-width="120px"
+        style="width: 400px; margin-left:30px;">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="editModel.title"></el-input>
+        </el-form-item>
+        <el-form-item label="作者" prop="author">
+          <el-input v-model="editModel.author"></el-input>
+        </el-form-item>
+        <el-form-item label="是否启用" prop="valid">
+          <el-radio-group v-model="editModel.valid">
+            <el-radio :label=true>启用</el-radio>
+            <el-radio :label=false>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="doUpdate()">确定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-  import {getList} from '@/api/article'
+  import { getList, updateArticle } from '@/api/article'
   import Pagination from '@/components/Pagination'
 
   export default {
@@ -101,9 +107,29 @@
           size: 20
         },
         listQuery: {
-          title: ''
+          title: '',
+          page: 1,
+          size: 20
         },
-        listLoading: true
+        listLoading: true,
+        dialogFormVisible: false,
+        editModel: {
+          id: undefined,
+          title: '',
+          author: '',
+          valid: false
+        },
+        rules: {
+          title: [
+            {required: true, message: '请输入标题名称', trigger: 'blur'}
+          ],
+          author: [
+            {required: true, message: '请输入作者名称', trigger: 'blur'}
+          ],
+          valid: [
+            {required: true, message: '请选择是否启用', trigger: 'change'}
+          ],
+        }
       }
     },
     created() {
@@ -115,25 +141,62 @@
         getList(this.listQuery).then(response => {
           this.list = response.data.items
           this.paging = response.data.paging
+          this.listQuery.page = this.paging.page
+          this.listQuery.size = this.paging.size
           this.listLoading = false
         }).finally(() => {
           this.listLoading = false
         })
       },
       search() {
-        this.paging.page = 1
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.fetchData();
       },
-      cleanSearch(){
-        this.listQuery.title=''
-        this.paging.page=1
+      cleanSearch() {
+        this.listQuery.title = ''
+        this.listQuery.page = 1
+        this.listQuery.size = 20
         this.fetchData()
       },
       handleUpdate(row) {
-        console.log(row.id)
+        this.resetModel()
+        this.dialogFormVisible = true
+        this.editModel = Object.assign({}, row)
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
       },
-      handleCreate() {
+      doUpdate() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            updateArticle(this.editModel).then(response => {
+              console.log(response.code)
+              if (response.code === 20000) {
+                this.dialogFormVisible = false
+                this.$message("编辑专题成功")
+                this.fetchData()
+              } else {
+                this.$message("编辑专题失败")
+              }
+            })
+          }
+        })
+      },
+      resetModel() {
+        this.editModel = {
+          id: undefined,
+          title: '',
+          author: '',
+          valid: false
+        }
       }
     }
   }
 </script>
+
+<style scoped>
+  .filter-container {
+    padding: 20px;
+  }
+</style>

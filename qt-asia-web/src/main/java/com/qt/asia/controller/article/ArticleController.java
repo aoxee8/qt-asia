@@ -3,12 +3,15 @@ package com.qt.asia.controller.article;
 import com.qt.asia.model.BaseModel;
 import com.qt.asia.model.PageModel;
 import com.qt.asia.model.Pager;
+import com.qt.asia.model.request.ArticleEditRequest;
 import com.qt.asia.model.request.ArticleRequest;
 import com.qt.asia.model.vo.ArticleVO;
 import com.qt.asia.service.article.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,12 +24,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/{env}/article")
 public class ArticleController {
 
-  @Autowired
-  private ArticleService articleService;
+    @Autowired
+    private ArticleService articleService;
 
-  @GetMapping(value = "/list")
-  public BaseModel<PageModel<ArticleVO>> list(ArticleRequest request, Pager page, @PathVariable String env) {
+    @GetMapping(value = "/list")
+    public BaseModel<PageModel<ArticleVO>> list(ArticleRequest request, Pager page, @PathVariable String env) {
 
-    return BaseModel.getInstance(articleService.getList(request, page));
-  }
+        return BaseModel.getInstance(articleService.getList(request, page));
+    }
+
+    @PostMapping(value = "/update")
+    public BaseModel update(@RequestBody ArticleEditRequest request, @PathVariable String env) {
+
+        return BaseModel.getInstance(null);
+    }
+
+    @PostMapping(value = "/add")
+    public BaseModel add(ArticleEditRequest request, @PathVariable String env) {
+
+        return BaseModel.getInstance(null);
+    }
 }
